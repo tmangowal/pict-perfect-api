@@ -50,13 +50,13 @@ router.get("/:id/posts", async (req, res) => {
 router.get("/:id/comments", async (req, res) => {
   try {
     const { id } = req.params;
-    const userFindPosts = await User.findByPk(id, {
+    const userFindComments = await User.findByPk(id, {
       include: [{ model: Comment }],
     });
 
     res.status(200).send({
       message: "GET User with comments",
-      result: userFindPosts,
+      result: userFindComments,
     });
   } catch (e) {
     console.log(e);

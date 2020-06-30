@@ -130,4 +130,21 @@ router.get("/:id/users", async (req, res) => {
   }
 });
 
+router.get("/:id/comments", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const postFindComments = await Post.findByPk(id, {
+      include: [{ model: Comment, include: [{ model: User }] }],
+    });
+
+    res.status(200).send({
+      message: "Get post with comments and its users",
+      result: postFindComments,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500);
+  }
+});
+
 module.exports = router;
