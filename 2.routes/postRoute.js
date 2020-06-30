@@ -147,4 +147,39 @@ router.get("/:id/comments", async (req, res) => {
   }
 });
 
+router.get("/:id/likes", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const postFindLikes = await Post.findByPk(id, {
+      include: [{ model: Like, include: [{ model: User }] }],
+    });
+
+    res.status(200).send({
+      message: "Get post with likes and its user",
+      result: postFindLikes,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500);
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const deletedPost = await Post.destroy({
+      where: {
+        id,
+      },
+    });
+
+    res.send(200).send({
+      message: "Post deleted",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
+});
+
 module.exports = router;
