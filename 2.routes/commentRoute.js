@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 const router = Router();
 
 const models = {
-  Comment,
+  User,
   Like,
   Post,
 };
