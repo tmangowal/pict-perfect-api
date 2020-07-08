@@ -81,6 +81,31 @@ router.get("/:id/likes", async (req, res) => {
   }
 });
 
+router.get("/login", async (req, res) => {
+  try {
+    const { username, password } = req.query;
+    const findUserByUsername = await User.findAll({
+      where: {
+        username,
+      },
+    });
+
+    console.log(username, password, findUserByUsername[0].password);
+
+    if (!bcrypt.compareSync(password, findUserByUsername[0].password)) {
+      throw "Password did not match!";
+    }
+
+    res.status(200).send({
+      message: "Logged in successfully",
+      result: findUserByUsername[0],
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     let whereIncludeClause = whereIncludeClauseGenerator(req.query, models);
@@ -148,26 +173,23 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.get("/login", async (req, res) => {
+// Get User with Post count
+router.post("/test", async (req, res) => {
   try {
-    const { username, password } = req.query;
-    const findUserByUsername = await User.findAll({
-      where: {
-        username,
+    const db = await User.findAll({
+      attributes: {
+        include: [
+          [Sequelize.fn("COUNT", Sequelize.col("Posts.id")), "postCount"],
+        ],
       },
+      include: [{ model: Post, attributes: [] }],
+      group: ["User.id"],
     });
 
-    if (!bcrypt.compareSync(password, findUserByUsername.password)) {
-      throw "Password did not match!";
-    }
-
-    res.status(200).send({
-      message: "Logged in successfully",
-      result: findUserByUsername,
-    });
+    res.send(db);
   } catch (e) {
     console.log(e);
-    res.status(500).send(e);
+    res.status(500);
   }
 });
 
