@@ -8,11 +8,17 @@ const cors = require("cors");
 app.use(bodyParser.json());
 app.use(cors());
 
-const { userRoute, commentRoute, postRoute } = require("./2.routes");
+const {
+  userRoute,
+  commentRoute,
+  postRoute,
+  restaurantRoute,
+} = require("./2.routes");
 
 app.use("/users", userRoute);
 app.use("/comments", commentRoute);
 app.use("/posts", postRoute);
+app.use("/restaurants", restaurantRoute);
 
 app.get("/", (req, res) => {
   res.send("<h1>Pict Perfect API</h1>");
